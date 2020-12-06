@@ -1,5 +1,5 @@
 ---
-title: "Lizard lengths"
+title: "Task 2: Comparing female lizard lenghts"
 author: "Andrea Gracia"
 date: "12/2/2020"
 output: html_document
@@ -10,9 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Introduction 
-Add a 2 - 3 sentence mini-introduction describing the data, the question you’re answering, and the method you’ll use
-
-Compare total lengths (variable = total_length, in millimeters) for female lizards (sex == “F”) of two species (variable spp): CNUN (Cnemidophorus uniparens, the Desert Grassland lizard) and CNTE (Cnemidophorus tessalatus, the Colorado Checkered lizard).
+In this mini-report we'll compare total lengths (total_length, in millimeters) for female lizards (sex == “F”) of two species (spp): CNUN (Cnemidophorus uniparens, the Desert Grassland lizard) and CNTE (Cnemidophorus tessalatus, the Colorado Checkered lizard) using a two-sample t-test and Cohen's d parameter.
 
 ```{r, include=FALSE, warning=FALSE}
 
@@ -76,7 +74,7 @@ ggplot()+
 ```
 
 
-**Figure 1** compares.....The means and standard errors of the populations are plotted, which makes it easier to visually discern how .... data spread compares to the average.
+**Figure 1** compares the means and standard errors of the two female lizard populations. The mean and standard deviation for each population is plotted, which makes it easier to visually discern how data spread compares to the average.
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 #Descriptive stats
@@ -100,9 +98,9 @@ lizard_length_table %>%
   kable_styling(full_width = FALSE)
 ```
 
-**Table 1** blah blah blah
+**Table 1** Contains the mean length (millimeters), standard deviation and sample size for female lizard populations of the Colorado Checkered and Desert Grassland populations. The table confirms findings of Figure 1, which show that Colorado Checkered lizards are longer in length on average. 
 
-## Analysis
+## Analysis and findings
 Is there a significant difference in total length difference in mean total length between female lizards for the two species? 
 
 ```{r,include=FALSE,warning=FALSE, message=FALSE}
@@ -161,8 +159,7 @@ CNTE_sd <- sd(CNTE_sample)
 
 On average, Colorado Checkered lizard have greater height than Desert Grassland lizards (`r round(CNUN_mean)` $\pm$ `r round(CNUN_sd)` and `r round(CNTE_mean)` $\pm$ `r round(CNTE_sd)` mm, respectively; mean $\pm$ 1 standard deviation). While the absolute difference in means is `r round(CNUN_mean) - round(CNTE_mean)` mm (a `r round((CNUN_mean - CNTE_mean)/((CNUN_mean + CNTE_mean)/2)*100)`% difference), the difference in means is significant (Welch's two-sample t-test: t(`r round(lizard_length_ttest_tidy$parameter)`) = `r round(lizard_length_ttest_tidy$statistic)`, p < 0.001), and the effect size is small (Cohen's *d* = `r round(lizard_length_effsize$estimate)`).
 
-## Findings 
-A 1 - 2 sentence summary statement describing your findings, that at least includes: the results of your hypothesis test, the effect size, and the actual means difference between the two groups
+
 
 ## Data
 Lightfoot, D. 2017. Lizard pitfall trap data (LTER-II, LTER-III) ver 36. Environmental Data Initiative. https://doi.org/10.6073/pasta/ff37b4cace16a9943575f3fd7067064e 

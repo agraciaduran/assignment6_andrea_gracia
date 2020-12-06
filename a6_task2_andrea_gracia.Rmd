@@ -76,7 +76,7 @@ survey_tidy <- tidy(survey_x2)
 ```
 
 ## Summary
-Our findings show that there is a significant association between political association and 'environmentalist' self-identification ($\chi$^2^(`r survey_tidy$parameter`) = `r round(survey_tidy$statistic,2)`, *p* = `r round(survey_tidy$p.value, 3)`). Half of those who identified themselves as conservatives, also did not identify themselves as an environmentalist. The opposite trend is seen in the Liberal category in which 54% considered themselves an environmentalist. Overall, self-identified conservatives seem to be more certain of whether they are a conservative or not (16%) compared to liberals (21%) because of their lower percentage in the unsure category. 
+Our findings show that there is a significant association between political association and 'environmentalist' self-identification ($\chi$^2^(`r survey_tidy$parameter`) = `r round(survey_tidy$statistic,2)`, *p* = `r round(survey_tidy$p.value, 4)`). Half of those who identified themselves as conservatives, also did not identify themselves as an environmentalist. The opposite trend is seen in the Liberal category in which 54% considered themselves an environmentalist. Overall, self-identified conservatives seem to be more certain of whether they are a conservative or not (16%) compared to liberals (21%) because of their lower percentage in the unsure category. 
 
 ## Data
 Citation: Andrews Forest LTER Site and C. Batavia. 2019. Influences on charitable giving for conservation: Online survey data of 1,331 respondents across the US, August 2017 ver 3. Environmental Data Initiative.https://doi.org/10.6073/pasta/926e6270e324a1322a900da14d38b96c
