@@ -1,11 +1,170 @@
 ---
-title: "Lizard lenghts"
+title: "Lizard lengths"
 author: "Andrea Gracia"
 date: "12/2/2020"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+## Introduction 
+Add a 2 - 3 sentence mini-introduction describing the data, the question you’re answering, and the method you’ll use
+
+Compare total lengths (variable = total_length, in millimeters) for female lizards (sex == “F”) of two species (variable spp): CNUN (Cnemidophorus uniparens, the Desert Grassland lizard) and CNTE (Cnemidophorus tessalatus, the Colorado Checkered lizard).
+
+```{r, include=FALSE, warning=FALSE}
+
+#Attach packages 
+library(tidyverse)
+library(janitor)
+library(GGally)
+library(stargazer)
+library(ggbeeswarm)
+library(here)
+library(kableExtra)
+library(lubridate)
+library(dplyr)
+library(ggplot2)
+library(effsize)
+library(broom)
+
+#Load and clean data
+lizards <- read.csv(here("data", "lizards.csv")) %>% 
+  clean_names()
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+### Data Visualization
+
+#Create simplified data frame to only include CNUN and CNTE species, female and total length
+
+#Then create extra columns that calculated mean,sd,sample size, standard error and variance of weight per sex.
+
+lizard_length <- lizards %>% 
+  select(spp,sex,total_length) %>% 
+  filter(sex=="F") %>% 
+  filter(spp %in% c("CNUN", "CNTE"))%>% 
+  group_by(spp) %>% 
+  mutate(mean_length=mean(total_length, na.rm =TRUE),
+         sd_length=sd(total_length, na.rm =TRUE),
+         sample_size=n(),
+         se_length=sd(total_length, na.rm =TRUE)/sqrt(n()),
+         var_length=var(total_length, na.rm =TRUE)) %>% 
+   mutate(spp=case_when(
+    spp == "CNUN" ~"Desert Grassland",
+    spp == "CNTE" ~"Colorado Checkered"))
+  
+#This beeswarm plot compares total lengths of female lizards for the two species, while plotting mean and standard error of weight per species
+
+ggplot()+
+ geom_beeswarm(data=lizard_length,
+                aes(x=spp, y=total_length, color=spp),
+                size=3,
+                alpha=0.5) +
+   geom_point(data=lizard_length, 
+             aes(x=spp, y=mean_length))+
+   geom_errorbar(data=lizard_length,
+                aes(x=spp,
+                    ymax=mean_length + sd_length,
+                    ymin=mean_length - sd_length),
+                width=0.1)+
+  theme_minimal()+
+  labs(y="Total Length (mm)", x="Species", title="Female Colorado Checkered and Desert Grassland Lizard lengths ", color="species") 
+ 
+```
+
+
+**Figure 1** compares.....The means and standard errors of the populations are plotted, which makes it easier to visually discern how .... data spread compares to the average.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+#Descriptive stats
+
+#Created a summary table that contains mean and standard deviation for total length and sample size for each species
+
+lizard_length_table <- lizards %>% 
+  select(spp,sex,total_length) %>% 
+  filter(sex=="F") %>% 
+  filter(spp %in% c("CNUN", "CNTE"))%>% 
+  group_by(spp) %>% 
+  summarize(mean_length=mean(total_length, na.rm =TRUE),
+         sd_length=sd(total_length, na.rm =TRUE),
+         sample_size=n()) %>% 
+   mutate(spp=case_when(
+    spp == "CNUN" ~"Desert Grassland",
+    spp == "CNTE" ~"Colorado Checkered"))
+ 
+lizard_length_table %>% 
+  kable(col.names = c("Species","Mean Length (mm)", "Standard Deviation", "Sample Size")) %>% 
+  kable_styling(full_width = FALSE)
+```
+
+**Table 1** blah blah blah
+
+## Analysis
+Is there a significant difference in total length difference in mean total length between female lizards for the two species? 
+
+```{r,include=FALSE,warning=FALSE, message=FALSE}
+#2-sample t-test 
+
+  #Exploratory data visualization
+   
+    #Histogram
+ggplot(data=lizard_length, aes(x=total_length))+
+  geom_histogram(bins=20)+
+  facet_wrap(~spp)
+
+   #Quantile-Quantile plot
+ggplot(data = lizard_length, aes(sample=total_length)) +
+  geom_qq()+
+  facet_wrap(~spp)
+
+# Overall: assumptions of normality hold, & sample size additionally >> Central Limit Theorem (means will be normally distributed). Two-sample t-test OK for means comparison!
+
+```
+
+```{r,warning=FALSE,include=FALSE, message=FALSE}
+
+#2-sample t-test 
+
+clean_lizard_length <- lizard_length %>% 
+  select(spp,sex,total_length) %>% 
+  drop_na(total_length) 
+
+CNUN_sample <- clean_lizard_length %>% 
+  filter(spp == "Desert Grassland") %>% 
+  pull(total_length)
+
+CNTE_sample <- clean_lizard_length %>% 
+  filter(spp == "Colorado Checkered") %>% 
+  pull(total_length)
+
+lizard_length_ttest <-t.test(x=CNUN_sample, CNTE_sample)
+lizard_length_ttest
+
+#Cohen's d
+lizard_length_effsize <- cohen.d(CNUN_sample, CNTE_sample)
+lizard_length_effsize
+
+# Get the tidy model results to call outputs in-line: 
+lizard_length_ttest_tidy <- tidy(lizard_length_ttest)
+
+# Get the means & SDs for each: 
+CNUN_mean <- mean(CNUN_sample)
+CNTE_mean <- mean(CNTE_sample)
+CNUN_sd <- sd(CNUN_sample)
+CNTE_sd <- sd(CNTE_sample)
+
+
+```
+
+On average, Colorado Checkered lizard have greater height than Desert Grassland lizards (`r round(CNUN_mean)` $\pm$ `r round(CNUN_sd)` and `r round(CNTE_mean)` $\pm$ `r round(CNTE_sd)` mm, respectively; mean $\pm$ 1 standard deviation). While the absolute difference in means is `r round(CNUN_mean) - round(CNTE_mean)` mm (a `r round((CNUN_mean - CNTE_mean)/((CNUN_mean + CNTE_mean)/2)*100)`% difference), the difference in means is significant (Welch's two-sample t-test: t(`r round(lizard_length_ttest_tidy$parameter)`) = `r round(lizard_length_ttest_tidy$statistic)`, p < 0.001), and the effect size is small (Cohen's *d* = `r round(lizard_length_effsize$estimate)`).
+
+## Findings 
+A 1 - 2 sentence summary statement describing your findings, that at least includes: the results of your hypothesis test, the effect size, and the actual means difference between the two groups
+
+## Data
+Lightfoot, D. 2017. Lizard pitfall trap data (LTER-II, LTER-III) ver 36. Environmental Data Initiative. https://doi.org/10.6073/pasta/ff37b4cace16a9943575f3fd7067064e 
+
 
