@@ -1,0 +1,59 @@
+---
+title: "Mono Lake Levels Visualization"
+author: "Andrea Gracia"
+date: "12/6/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+#Attach packages and load data 
+
+library(tidyverse)
+library(janitor)
+library(here)
+library(ggplot2)
+library(lubridate)
+library(hrbrthemes)
+
+mono_lake_levels <- read.csv(here("data", "mono_lake_annual_levels.csv"), skip = 5) %>% 
+  clean_names()
+
+#Create data visualization
+ggplot(data=mono_lake_levels, aes(x=year, y=lake_level_feet_above_sea_level))+
+  geom_path(color="gray", size=1)+ 
+  geom_point(color="darkorange", size=0.9)+
+  
+  geom_hline(yintercept = 6377, color= "firebrick", linetype="dashed")+
+  geom_text(aes(x=1880, y=6379, label="Land bridges emerge below 6377 ft"),stat = "unique", color="firebrick", size=3 )+
+  
+  annotate(geom = "point", x= 1941, y = 6417, color="black", size=1.8)+
+  geom_text(aes(x=1987, y=6425, label="1941:Water Diversion Policy"),stat = "unique", color="black", size=3 )+
+  
+    annotate(geom = "point", x= 1978, y = 6375, color="deepskyblue1", size=1.5)+
+  geom_text(aes(x=1987, y=6421, label="1978:ML Commitee formed"),stat = "unique", color="deepskyblue1", size=3 )+
+  
+  annotate(geom = "point", x= 1983, y = 6378.6, color="darkorchid1", size=1.8)+
+  geom_text(aes(x=1987, y=6417, label="1983:Public Trust Lawsuit"),stat = "unique", color="darkorchid1", size=3)+
+  
+  annotate(geom = "point", x= 1994, y = 6374.6, color="darkgreen", size=1.8)+
+  geom_text(aes(x=1987, y=6413, label="1994:State Water Board Decision"),stat = "unique", color="darkgreen", size=3)+
+  
+  annotate(geom = "point", x= 1998, y = 6384.3, color="dodgerblue4", size=1.8)+
+  geom_text(aes(x=1987, y=6409, label="1998:Water Restoration order"),stat = "unique", color="dodgerblue4", size=3 )+
+  
+  annotate(geom = "point", x= 2013, y = 6380.6, color="deeppink4", size=1.8)+
+  geom_text(aes(x=1987, y=6405, label="2013:Stream Restoration Agreement"),stat = "unique", color="deeppink4", size=3)+
+  
+  
+  labs(x="Year",
+       y="Lake level (ft above sea level)", 
+       title= "Mono Lake Levels",
+       subtitle="change in Mono Lake levels from 1850 to 2017")+
+  scale_x_discrete(limits=c(1850,1875,1900,1925,1950,1975,2000))+
+  theme_minimal()
+ 
+```
+
+**Figure 1**
