@@ -1,11 +1,11 @@
 ---
-title: "Mono Lake Levels Visualization"
+title: "Task 4: Mono Lake Levels Visualization"
 author: "Andrea Gracia"
 date: "12/6/2020"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, echo=FALSE, warning=FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
 #Attach packages and load data 
@@ -22,7 +22,7 @@ mono_lake_levels <- read.csv(here("data", "mono_lake_annual_levels.csv"), skip =
 
 #Create data visualization
 ggplot(data=mono_lake_levels, aes(x=year, y=lake_level_feet_above_sea_level))+
-  geom_path(color="gray", size=1)+ 
+  geom_path(color="gray", size=0.7)+ 
   geom_point(color="darkorange", size=0.9)+
   
   geom_hline(yintercept = 6377, color= "firebrick", linetype="dashed")+
@@ -31,7 +31,7 @@ ggplot(data=mono_lake_levels, aes(x=year, y=lake_level_feet_above_sea_level))+
   annotate(geom = "point", x= 1941, y = 6417, color="black", size=1.8)+
   geom_text(aes(x=1987, y=6425, label="1941:Water Diversion Policy"),stat = "unique", color="black", size=3 )+
   
-    annotate(geom = "point", x= 1978, y = 6375, color="deepskyblue1", size=1.5)+
+    annotate(geom = "point", x= 1978, y = 6375, color="deepskyblue1", size=1.8)+
   geom_text(aes(x=1987, y=6421, label="1978:ML Commitee formed"),stat = "unique", color="deepskyblue1", size=3 )+
   
   annotate(geom = "point", x= 1983, y = 6378.6, color="darkorchid1", size=1.8)+
@@ -50,10 +50,10 @@ ggplot(data=mono_lake_levels, aes(x=year, y=lake_level_feet_above_sea_level))+
   labs(x="Year",
        y="Lake level (ft above sea level)", 
        title= "Mono Lake Levels",
-       subtitle="change in Mono Lake levels from 1850 to 2017")+
-  scale_x_discrete(limits=c(1850,1875,1900,1925,1950,1975,2000))+
+       subtitle="Lake water levels from 1850 to 2017")+
+       scale_x_discrete(limits=c(1850,1875,1900,1925,1950,1975,2000))+
   theme_minimal()
  
 ```
 
-**Figure 1**
+**Figure 1** Visualizes water levels in Mono Lake from 1850 to 2017.The time series notes that at or below 6377 ft above sea level land bridges emerge between mainland and lake islands, which allow predators to access major bird nesting sites. In addition, there are six major ML historical events depicted, which impacted the lake water levels we see today.  
